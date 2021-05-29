@@ -1,6 +1,0 @@
-Target dependency graph (3 targets)
-BookMyShowAssignment in BookMyShowAssignment
-BookMyShowAssignmentTests in BookMyShowAssignment, depends on:
-BookMyShowAssignment in BookMyShowAssignment (explicit)
-BookMyShowAssignmentUITests in BookMyShowAssignment, depends on:
-BookMyShowAssignment in BookMyShowAssignment (explicit)
