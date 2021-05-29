@@ -24,7 +24,6 @@ class DetailViewController : UIViewController,UITableViewDelegate {
         super.viewDidLoad()
         detailTableView.frame = self.view.frame
         setupTableviewCells()
-        setupBindings()
         // delay and update tableview
         self.updateDetail(with: self.viewModel.detailViewCards)
     }
@@ -66,19 +65,6 @@ class DetailViewController : UIViewController,UITableViewDelegate {
         let rowModel = detailDatasource.snapshot().sectionIdentifiers[indexPath.section].rows[indexPath.row]
         print(rowModel)
         
-    }
-    
-    private func setupBindings() {
-        let publisher = viewModel.fetchDetailCards()
-        publisher
-            .receive(on: DispatchQueue.main)
-            .sink { (completion) in
-            if case .failure(let error) = completion {
-                print("fetch error -- \(error)")
-            }
-        } receiveValue: { [weak self] cards in
-            self?.updateDetail(with: self?.viewModel.detailViewCards ?? [DetailSectionModel]())
-        }.store(in: &cancellables)
     }
 }
 

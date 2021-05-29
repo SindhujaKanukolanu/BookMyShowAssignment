@@ -28,7 +28,7 @@ class DataSourceViewModel {
         let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US")
         let task = URLSession.shared.dataTask(with: urlString ?? URL(fileURLWithPath: "")) {(data, response, error) in
             guard let data = data else { return }
-            _ = self.parseJson(json: self.convertStringToDictionary(data: data))
+            _ = self.updateModel(json: self.convertStringToDictionary(data: data))
         }
         task.resume()
         
@@ -69,10 +69,10 @@ class DataSourceViewModel {
         return [String:AnyObject]()
     }
     
-    func parseJson(json:[String:AnyObject]) -> [SectionModel] {
+    func updateModel(json:[String:AnyObject]) -> [SectionModel] {
         let resultString = json["results"]
         for each in resultString as! [AnyObject]{
-            let model = SectionModel(title: "", rows: [DataModel(movieName: each["title"] as! String, image: UIImage(contentsOfFile: each["backdrop_path"] as! String) ?? UIImage(),releaseDate: convertDateFormat(inputDate: each["release_date"] as! String))])
+            let model = SectionModel(title: "", rows: [DataModel(movieName: each["title"] as! String, image: UIImage(named:"bmsImage.jpeg") ?? UIImage(),releaseDate: convertDateFormat(inputDate: each["release_date"] as! String))])
             cards.append(model)
             buildDetailsModel(object: each)
         }
