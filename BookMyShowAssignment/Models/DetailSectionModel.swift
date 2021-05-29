@@ -6,8 +6,9 @@
 //
 
 import Foundation
-struct DetailSectionModel: Hashable, Equatable {
 
+struct DetailSectionModel: Hashable, Equatable {
+    
     var title: String
     var rows: [DetailDataModel]
     

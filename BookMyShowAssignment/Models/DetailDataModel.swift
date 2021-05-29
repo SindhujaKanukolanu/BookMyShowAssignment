@@ -7,13 +7,12 @@
 
 import Foundation
 
-
 struct DetailDataModel:Hashable {
-
+    
     static func == (lhs: DetailDataModel, rhs: DetailDataModel) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
-
+    
     var overView   : String
     var ratings    : NSNumber
     var language   : String

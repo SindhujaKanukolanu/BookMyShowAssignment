@@ -8,16 +8,15 @@
 import UIKit
 import Combine
 
-
 class ViewController: UIViewController,UITableViewDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
     var searchController = UISearchController(searchResultsController: nil)
-
+    
     let rowIdentifier = "listIdentifier"
     let detailsViewController = DetailViewController()
-
+    
     
     private lazy var datasource = makeDatasource()
     
@@ -30,7 +29,7 @@ class ViewController: UIViewController,UITableViewDelegate {
         setupTableviewCells()
         configureSearchController()
         setupBindings()
-    
+        
         // delay and update tableview
         self.update(with: self.viewModel.cards)
     }
@@ -48,12 +47,12 @@ class ViewController: UIViewController,UITableViewDelegate {
         publisher
             .receive(on: DispatchQueue.main)
             .sink { (completion) in
-            if case .failure(let error) = completion {
-                print("fetch error -- \(error)")
-            }
-        } receiveValue: { [weak self] cards in
-            self?.update(with: cards)
-        }.store(in: &cancellables)
+                if case .failure(let error) = completion {
+                    print("fetch error -- \(error)")
+                }
+            } receiveValue: { [weak self] cards in
+                self?.update(with: cards)
+            }.store(in: &cancellables)
     }
     
     private func setupTableviewCells() {
@@ -92,7 +91,7 @@ class ViewController: UIViewController,UITableViewDelegate {
 
 // all diffable dataosurce code
 extension ViewController {
-
+    
     // create diffable tableview datasource
     private func makeDatasource() -> UITableViewDiffableDataSource<SectionModel, DataModel> {
         let reuseIdentifier = rowIdentifier
@@ -122,7 +121,7 @@ extension ViewController {
             snapshot.appendSections([section])
             snapshot.appendItems(section.rows, toSection: section)
         }
-
+        
         datasource.apply(snapshot, animatingDifferences: animate, completion: nil)
     }
     
@@ -131,7 +130,7 @@ extension ViewController {
         snapshot.deleteItems([card])
         datasource.apply(snapshot, animatingDifferences: animate, completion: nil)
     }
-
+    
 }
 
 extension ViewController : UISearchResultsUpdating {
@@ -144,33 +143,40 @@ extension ViewController : UISearchResultsUpdating {
     func filteredValues(for queryOrNil: String?) -> [SectionModel] {
         let sections = viewModel.cards
         var filteredCards = [SectionModel]()
-      guard
-        let query = queryOrNil,
-        !query.isEmpty
+        guard
+            let query = queryOrNil,
+            !query.isEmpty
         else {
-          return sections
-      }
+            return sections
+        }
         for rows in sections {
             print(rows)
         }
         for eachSection in sections {
             for name in eachSection.rows {
-                if name.movieName.contains(query.uppercased()) || name.movieName.contains(query) {
-                    filteredCards.append(contentsOf: [SectionModel(title: "", rows: [name])])
+                var character = query[...]
+                for char in query {
+                    if char == character[character.startIndex] {
+                        character.removeFirst()
+                        if !character.isEmpty {
+                            if name.movieName.contains(character.base.uppercased()) || name.movieName.contains(character.base) {
+                                filteredCards.append(contentsOf: [SectionModel(title: "", rows: [name])])
+                            }
+                        }
+                    }
                 }
             }
         }
-      return filteredCards
+        return filteredCards
     }
     
-    //Test
     func configureSearchController() {
-      searchController.searchResultsUpdater = self
-      searchController.obscuresBackgroundDuringPresentation = false
-      searchController.searchBar.placeholder = "Search Movies"
-      navigationItem.searchController = searchController
-      definesPresentationContext = true
-     tableView.addSubview(searchController.searchBar)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Movies"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        tableView.addSubview(searchController.searchBar)
     }
     
 }

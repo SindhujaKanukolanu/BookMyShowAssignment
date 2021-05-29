@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct SectionModel: Hashable, Equatable {
 
     var title: String

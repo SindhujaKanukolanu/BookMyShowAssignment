@@ -8,16 +8,13 @@
 import Foundation
 import UIKit
 
-
-
 struct DataModel:Hashable {
-
+    
     static func == (lhs: DataModel, rhs: DataModel) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
-
+    
     var movieName   : String
     var image       : UIImage
     var releaseDate : String
-    
 }

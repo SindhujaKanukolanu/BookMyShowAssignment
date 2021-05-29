@@ -12,11 +12,11 @@ class BookMyShowAssignmentTests: XCTestCase {
     let mockdataSourceViewModel = DataSourceViewModel()
     var mockSectionModel = [SectionModel]()
     var mockDetailSectionModel = [DetailSectionModel]()
-
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
@@ -26,7 +26,7 @@ class BookMyShowAssignmentTests: XCTestCase {
         mockDetailSectionModel = [DetailSectionModel(title: "MockDetailSection", rows: [DetailDataModel(overView: "OverView", ratings: 5, language: "English")])]
         XCTAssertTrue(true,"Models Initialized")
     }
-
+    
     func testSendRequest() {
         _ = mockdataSourceViewModel.sendUrlRequest()
         XCTAssertTrue(true,"Request Successfull")
@@ -37,12 +37,12 @@ class BookMyShowAssignmentTests: XCTestCase {
         publisher
             .receive(on: DispatchQueue.main)
             .sink { (completion) in
-            if case .failure(let error) = completion {
-                print("fetch error -- \(error)")
-            }
-        } receiveValue: { [weak self] cards in
-            self?.mockSectionModel = cards
-        }.cancel()
+                if case .failure(let error) = completion {
+                    print("fetch error -- \(error)")
+                }
+            } receiveValue: { [weak self] cards in
+                self?.mockSectionModel = cards
+            }.cancel()
         XCTAssertTrue(true,"Cards Fetched")
     }
     
@@ -51,13 +51,13 @@ class BookMyShowAssignmentTests: XCTestCase {
         publisher
             .receive(on: DispatchQueue.main)
             .sink { (completion) in
-            if case .failure(let error) = completion {
-                print("fetch error -- \(error)")
-            }
-        } receiveValue: { [weak self] cards in
-            self?.mockDetailSectionModel = cards
-        }.cancel()
+                if case .failure(let error) = completion {
+                    print("fetch error -- \(error)")
+                }
+            } receiveValue: { [weak self] cards in
+                self?.mockDetailSectionModel = cards
+            }.cancel()
         XCTAssertTrue(true,"Detail Cards fetched")
     }
-
+    
 }

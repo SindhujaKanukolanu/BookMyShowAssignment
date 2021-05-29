@@ -69,7 +69,7 @@ class DetailViewController : UIViewController,UITableViewDelegate {
 }
 
 extension DetailViewController {
-
+    
     // create diffable tableview datasource
     private func makeDatasource() -> UITableViewDiffableDataSource<DetailSectionModel, DetailDataModel> {
         let reuseIdentifier = detailIdentifier
@@ -102,5 +102,5 @@ extension DetailViewController {
         snapshot.deleteItems([card])
         detailDatasource.apply(snapshot, animatingDifferences: animate, completion: nil)
     }
-
+    
 }
