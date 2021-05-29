@@ -18,46 +18,62 @@ class DataSourceViewModel {
     
     var cards = [SectionModel]()
     
+    
     init() {
-        buildCells()
+        sendUrlRequest()
     }
     
-    private func buildCells() {
-        let bmsModel = SectionModel(title: "",
-                                    rows: [DataModel(movieName: "Baahubali", image: UIImage(named: "bmsImage.jpeg") ?? UIImage(),
-                                                     releaseDate: "2015"),
-                                           DataModel(movieName: "Dilwale Dulhaniya LeJayenge", image: UIImage(named: "bmsImage.jpeg") ?? UIImage(),
-                                                     releaseDate: "2015"),
-                                           DataModel(movieName: "Dostana", image: UIImage(named: "bmsImage.jpeg") ?? UIImage(),
-                                                     releaseDate: "2015"),
-                                           DataModel(movieName: "Happydays", image: UIImage(named: "bmsImage.jpeg") ?? UIImage(),
-                                                     releaseDate: "2015"),
-                                           DataModel(movieName: "Hello", image: UIImage(named: "bmsImage.jpeg") ?? UIImage(),
-                                                     releaseDate: "2015")])
-        cards = [bmsModel]
+    func sendUrlRequest() {
+        let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US")
+        let task = URLSession.shared.dataTask(with: urlString ?? URL(fileURLWithPath: "")) {(data, response, error) in
+            guard let data = data else { return }
+            _ = self.parseJson(json: self.convertStringToDictionary(data: data))
+        }
+        task.resume()
+        
     }
     
-    //    func fetchCatalogCards() -> AnyPublisher<[SectionModel], CatalogError> {
-    //        return Future { promise in
-    //            DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak self] in
-    //                guard var updatedCards = self?.cards else {
-    //                    promise(.failure(.Unknown))
-    //                    return
-    //                }
-    //                let colleagueSectionModel = SectionModel(title: "Co-Worker", rows:
-    //                                                            [RowModel(name: "Nitin", detail: "xxx@gmail.com", type: .A),
-    //                                                             RowModel(name: "Prashanth", detail: "xxx@gmail.com", type: .A),
-    //                                                             RowModel(name: "Ramya", detail: "xxx@gmail.com", type: .A),
-    //                                                             RowModel(name: "Sindhu", detail: "xxx@gmail.com", type: .A),
-    //                                                             RowModel(name: "Reshma", detail: "xxx@gmail.com", type: .A),
-    //                                                             RowModel(name: "Apoorv", detail: "xxx@gmail.com", type: .A)])
-    //                updatedCards.append(colleagueSectionModel)
-    //
-    //                //also update state of view model cards
-    //                self?.cards.append(colleagueSectionModel)
-    //                promise(.success(updatedCards))
-    //            }
-    //        }.eraseToAnyPublisher()
-    //    }
+    func fetchCards() -> AnyPublisher<[SectionModel], NetworkError> {
+        return Future { promise in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak self] in
+                guard let updatedCards = self?.cards else {
+                    promise(.failure(.Failure))
+                    return
+                }
+                promise(.success(updatedCards))
+            }
+        }.eraseToAnyPublisher()
+    }
     
+    func convertStringToDictionary(data: Data) -> [String:AnyObject] {
+        do {
+            let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
+            return json!
+        } catch {
+            print("Something went wrong")
+        }
+        return [String:AnyObject]()
+    }
+    
+    func parseJson(json:[String:AnyObject]) -> [SectionModel] {
+        let resultString = json["results"]
+        for each in resultString as! [AnyObject]{
+            print(each)
+            let model = SectionModel(title: "", rows: [DataModel(movieName: each["title"] as! String, image: UIImage(contentsOfFile: each["backdrop_path"] as! String) ?? UIImage(),releaseDate: convertDateFormat(inputDate: each["release_date"] as! String))])
+            cards.append(model)
+        }
+        return cards
+    }
+    
+    func convertDateFormat(inputDate: String) -> String {
+        
+        let olDateFormatter = DateFormatter()
+        olDateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let oldDate = olDateFormatter.date(from: inputDate)
+        
+        let convertDateFormatter = DateFormatter()
+        convertDateFormatter.dateFormat = "dd-MM-yyyy"
+        return convertDateFormatter.string(from: oldDate!)
+    }
 }

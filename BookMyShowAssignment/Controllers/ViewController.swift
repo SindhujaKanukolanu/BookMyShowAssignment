@@ -28,6 +28,7 @@ class ViewController: UIViewController,UITableViewDelegate {
         
         setupTableviewCells()
         configureSearchController()
+        setupBindings()
         //setupBindings()
     
         // delay and update tableview
@@ -49,18 +50,18 @@ class ViewController: UIViewController,UITableViewDelegate {
         }
     }
     
-//    private func setupBindings() {
-//        let publisher = viewModel.fetchCatalogCards()
-//        publisher
-//            .receive(on: DispatchQueue.main)
-//            .sink { (completion) in
-//            if case .failure(let error) = completion {
-//                print("fetch error -- \(error)")
-//            }
-//        } receiveValue: { [weak self] cards in
-//            self?.update(with: cards)
-//        }.store(in: &cancellables)
-//    }
+    private func setupBindings() {
+        let publisher = viewModel.fetchCards()
+        publisher
+            .receive(on: DispatchQueue.main)
+            .sink { (completion) in
+            if case .failure(let error) = completion {
+                print("fetch error -- \(error)")
+            }
+        } receiveValue: { [weak self] cards in
+            self?.update(with: cards)
+        }.store(in: &cancellables)
+    }
     
     private func setupTableviewCells() {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: rowIdentifier)
