@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E14B69132662775D00FA8C4D /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14B69122662775D00FA8C4D /* DetailViewController.swift */; };
+		E14B69152662798300FA8C4D /* DetailDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14B69142662798300FA8C4D /* DetailDataModel.swift */; };
 		E19561832661501B0083AA8B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561822661501B0083AA8B /* AppDelegate.swift */; };
 		E19561852661501B0083AA8B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561842661501B0083AA8B /* SceneDelegate.swift */; };
 		E19561872661501B0083AA8B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561862661501B0083AA8B /* ViewController.swift */; };
@@ -19,6 +21,7 @@
 		E19561B9266154AA0083AA8B /* DataSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561B8266154AA0083AA8B /* DataSourceViewModel.swift */; };
 		E19561BB266155370083AA8B /* bmsImage.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = E19561BA266155370083AA8B /* bmsImage.jpeg */; };
 		E19561BD266156E20083AA8B /* SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561BC266156E20083AA8B /* SectionModel.swift */; };
+		E19561BF266274E40083AA8B /* DetailSectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19561BE266274E40083AA8B /* DetailSectionModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E14B69122662775D00FA8C4D /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		E14B69142662798300FA8C4D /* DetailDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDataModel.swift; sourceTree = "<group>"; };
 		E195617F2661501B0083AA8B /* BookMyShowAssignment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookMyShowAssignment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E19561822661501B0083AA8B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E19561842661501B0083AA8B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +62,7 @@
 		E19561B8266154AA0083AA8B /* DataSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewModel.swift; sourceTree = "<group>"; };
 		E19561BA266155370083AA8B /* bmsImage.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bmsImage.jpeg; sourceTree = "<group>"; };
 		E19561BC266156E20083AA8B /* SectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionModel.swift; sourceTree = "<group>"; };
+		E19561BE266274E40083AA8B /* DetailSectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailSectionModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +150,8 @@
 			children = (
 				E19561B6266151260083AA8B /* DataModel.swift */,
 				E19561BC266156E20083AA8B /* SectionModel.swift */,
+				E19561BE266274E40083AA8B /* DetailSectionModel.swift */,
+				E14B69142662798300FA8C4D /* DetailDataModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -168,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				E19561862661501B0083AA8B /* ViewController.swift */,
+				E14B69122662775D00FA8C4D /* DetailViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -305,10 +314,13 @@
 			files = (
 				E19561872661501B0083AA8B /* ViewController.swift in Sources */,
 				E19561B7266151260083AA8B /* DataModel.swift in Sources */,
+				E19561BF266274E40083AA8B /* DetailSectionModel.swift in Sources */,
+				E14B69152662798300FA8C4D /* DetailDataModel.swift in Sources */,
 				E19561B9266154AA0083AA8B /* DataSourceViewModel.swift in Sources */,
 				E19561832661501B0083AA8B /* AppDelegate.swift in Sources */,
 				E19561852661501B0083AA8B /* SceneDelegate.swift in Sources */,
 				E19561BD266156E20083AA8B /* SectionModel.swift in Sources */,
+				E14B69132662775D00FA8C4D /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

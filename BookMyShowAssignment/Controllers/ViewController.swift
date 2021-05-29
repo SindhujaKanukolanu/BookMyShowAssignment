@@ -16,31 +16,23 @@ class ViewController: UIViewController,UITableViewDelegate {
     var searchController = UISearchController(searchResultsController: nil)
 
     let rowIdentifier = "listIdentifier"
+    let detailsViewController = DetailViewController()
+
     
     private lazy var datasource = makeDatasource()
     
-    private var viewModel = DataSourceViewModel()
+    var viewModel = DataSourceViewModel()
     
     var cancellables = [AnyCancellable]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupTableviewCells()
         configureSearchController()
         setupBindings()
-        //setupBindings()
     
         // delay and update tableview
         self.update(with: self.viewModel.cards)
-        
-        // simulate remove from dataosurce
-//        let pickedSectionIndexIndex = Int.random(in: 0..<viewModel.cards.count)
-//        let pickedRowIndex = Int.random(in: 0..<viewModel.cards[pickedSectionIndexIndex].rows.count)
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
-//            self.remove(viewModel.cards[pickedSectionIndexIndex].rows[pickedRowIndex])
-//        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -49,6 +41,7 @@ class ViewController: UIViewController,UITableViewDelegate {
             subscriber.cancel()
         }
     }
+    
     
     private func setupBindings() {
         let publisher = viewModel.fetchCards()
@@ -90,6 +83,10 @@ class ViewController: UIViewController,UITableViewDelegate {
         // on row selection
         let rowModel = datasource.snapshot().sectionIdentifiers[indexPath.section].rows[indexPath.row]
         print(rowModel)
+        viewModel.getDetailsCard(indexPath: indexPath.section)
+        present(detailsViewController, animated: true, completion: nil)
+        detailsViewController.updateDetail(with: viewModel.detailViewCards)
+        
     }
 }
 
@@ -158,7 +155,7 @@ extension ViewController : UISearchResultsUpdating {
         }
         for eachSection in sections {
             for name in eachSection.rows {
-                if name.movieName.contains(query.uppercased()) {
+                if name.movieName.contains(query.uppercased()) || name.movieName.contains(query) {
                     filteredCards.append(contentsOf: [SectionModel(title: "", rows: [name])])
                 }
             }
