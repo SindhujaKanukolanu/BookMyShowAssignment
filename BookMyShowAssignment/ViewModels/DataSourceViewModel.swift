@@ -19,19 +19,25 @@ class DataSourceViewModel {
     var cards = [SectionModel]()
     var detailCards = [DetailSectionModel]()
     var detailViewCards = [DetailSectionModel]()
+    private var cancellable: AnyCancellable?
+    var jsonObject = [String:AnyObject]()
+
     
     init() {
-        sendUrlRequest()
+        getResponse()
     }
-    
-    func sendUrlRequest() {
-        let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US")
-        let task = URLSession.shared.dataTask(with: urlString ?? URL(fileURLWithPath: "")) {(data, response, error) in
-            guard let data = data else { return }
-            _ = self.updateModel(json: self.convertStringToDictionary(data: data))
-        }
-        task.resume()
         
+    func getResponse() {
+        let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US")
+        self.cancellable = URLSession.shared.dataTaskPublisher(for: urlString ?? URL(fileURLWithPath: ""))
+            .map {
+                self.jsonObject = self.convertStringToDictionary(data: $0.data)
+            }
+        .eraseToAnyPublisher()
+            .sink(receiveCompletion:  { completion in
+                }, receiveValue: { posts in
+                    _ = self.updateModel(json: self.jsonObject)
+                })
     }
     
     func fetchCards() -> AnyPublisher<[SectionModel], NetworkError> {
@@ -62,11 +68,12 @@ class DataSourceViewModel {
     func convertStringToDictionary(data: Data) -> [String:AnyObject] {
         do {
             let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
+            jsonObject = json!
             return json!
         } catch {
             print("Something went wrong")
         }
-        return [String:AnyObject]()
+        return jsonObject
     }
     
     func updateModel(json:[String:AnyObject]) -> [SectionModel] {

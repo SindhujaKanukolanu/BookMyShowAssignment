@@ -157,7 +157,6 @@ extension ViewController : UISearchResultsUpdating {
                 var character = query[...]
                 for char in query {
                     if char == character[character.startIndex] {
-                        character.removeFirst()
                         if !character.isEmpty {
                             if name.movieName.contains(character.base.uppercased()) || name.movieName.contains(character.base) {
                                 filteredCards.append(contentsOf: [SectionModel(title: "", rows: [name])])
