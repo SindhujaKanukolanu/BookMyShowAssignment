@@ -14,7 +14,7 @@ struct DetailDataModel:Hashable {
     }
     
     var overView   : String
-    var ratings    : NSNumber
+    var ratings    : Double
     var language   : String
     
 }

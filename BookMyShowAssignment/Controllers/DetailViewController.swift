@@ -54,9 +54,9 @@ class DetailViewController : UIViewController,UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let sectionModel = detailDatasource.snapshot().sectionIdentifiers[section]
-        
         let label = UILabel()
         label.text = sectionModel.title
+        label.textAlignment = NSTextAlignment.center
         return label
     }
     
@@ -82,6 +82,8 @@ extension DetailViewController {
             cell.textLabel?.text = rowModel.overView
             cell.textLabel?.numberOfLines = 10
             cell.detailTextLabel?.text = rowModel.language
+            cell.detailTextLabel?.textAlignment = NSTextAlignment.center
+            cell.detailTextLabel?.textColor = UIColor.red
             cell.accessoryView?.accessibilityIdentifier  = String(describing: rowModel.ratings)
             return cell
         }

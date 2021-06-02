@@ -21,28 +21,54 @@ class DataSourceViewModel {
     var detailViewCards = [DetailSectionModel]()
     private var cancellable: AnyCancellable?
     var jsonObject = [String:AnyObject]()
+    var allCancellable = Set<AnyCancellable>()
+    var models = [SectionModel]()
+
 
     
     init() {
-        getResponse()
+        getResponseData()
     }
         
-    func getResponse() {
-        let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US")
-        self.cancellable = URLSession.shared.dataTaskPublisher(for: urlString ?? URL(fileURLWithPath: ""))
-            .map {
-                self.jsonObject = self.convertStringToDictionary(data: $0.data)
-            }
-        .eraseToAnyPublisher()
-            .sink(receiveCompletion:  { completion in
-                }, receiveValue: { posts in
-                    _ = self.updateModel(json: self.jsonObject)
-                })
+    func getResponseData() {
+        if let urlString = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=ca236800fe491eba2aad88c0a349bc2e&language=en-US") {
+            let jsonPublisher =  URLSession.shared.dataTaskPublisher(for: urlString)
+                .tryMap ({ (data, response) -> Data in
+                    if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 400 {
+                            print("unauthorized")
+                        }
+                    }
+                    return data
+                }).decode(type: Model.self, decoder: JSONDecoder()).eraseToAnyPublisher()
+                
+           // consume the value to Upadte the model
+            jsonPublisher.sink { (completion) in
+                switch(completion) {
+                case .failure(let error):
+                    print(error)
+                case .finished:
+                    print("sink finished sucessfullhy")
+                }
+            } receiveValue: {(users: Model) in
+                self.updateSectionModel(models: users)
+            }.store(in: &allCancellable)
+        }
+    }
+    
+    func updateSectionModel(models:Model) {
+        for each in models.results {
+            let cardModel = SectionModel(title:"", rows: [DataModel(movieName: each.originalTitle, image: UIImage(named:"bmsImage.jpeg") ?? UIImage(), releaseDate: each.releaseDate)])
+            let detailModel =
+                DetailSectionModel(title: each.title, rows: [DetailDataModel(overView: each.overview, ratings: each.voteAverage, language: getLanguageFromCode(lang:each.originalLanguage.rawValue))])
+            detailCards.append(detailModel)
+            cards.append(cardModel)
+        }
     }
     
     func fetchCards() -> AnyPublisher<[SectionModel], NetworkError> {
         return Future { promise in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak self] in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) { [weak self] in
                 guard let updatedCards = self?.cards else {
                     promise(.failure(.Failure))
                     return
@@ -76,16 +102,6 @@ class DataSourceViewModel {
         return jsonObject
     }
     
-    func updateModel(json:[String:AnyObject]) -> [SectionModel] {
-        let resultString = json["results"]
-        for each in resultString as! [AnyObject]{
-            let model = SectionModel(title: "", rows: [DataModel(movieName: each["title"] as! String, image: UIImage(named:"bmsImage.jpeg") ?? UIImage(),releaseDate: convertDateFormat(inputDate: each["release_date"] as! String))])
-            cards.append(model)
-            buildDetailsModel(object: each)
-        }
-        return cards
-    }
-    
     func convertDateFormat(inputDate: String) -> String {
         let olDateFormatter = DateFormatter()
         olDateFormatter.dateFormat = "yyyy-MM-dd"
@@ -94,12 +110,7 @@ class DataSourceViewModel {
         convertDateFormatter.dateFormat = "dd-MM-yyyy"
         return convertDateFormatter.string(from: oldDate!)
     }
-    
-    func buildDetailsModel(object:AnyObject) {
-        let detailModel = DetailSectionModel(title: "Synopsis", rows: [DetailDataModel(overView: object["overview"] as! String, ratings: object["vote_average"] as! NSNumber, language: getLanguageFromCode(lang:object["original_language"] as! String))])
-        detailCards.append(detailModel)
-    }
-    
+
     func getDetailsCard(indexPath : Int) {
         detailViewCards.removeAll()
         detailViewCards.append(detailCards[indexPath])
